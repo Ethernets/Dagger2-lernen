@@ -9,7 +9,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.daggerlernen.Constants
 import com.example.daggerlernen.R
 import com.example.daggerlernen.networking.StackoverflowApi
+import com.example.daggerlernen.questions.FetchQuestionsUseCase
 import com.example.daggerlernen.questions.Question
+import com.example.daggerlernen.screens.common.dialogs.DialogsNavigator
 import com.example.daggerlernen.screens.common.dialogs.ServerErrorDialogFragment
 import com.example.daggerlernen.screens.questiondetails.QuestionDetailsActivity
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +29,9 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMVC.Listener
 
     private lateinit var viewMVC: QuestionsListViewMVC
 
-    private lateinit var stackoverflowApi: StackoverflowApi
+    private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
+
+    private lateinit var dialogsNavigator: DialogsNavigator
 
     private var isDataLoaded = false
 
@@ -35,13 +39,8 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMVC.Listener
         super.onCreate(savedInstanceState)
         viewMVC = QuestionsListViewMVC(LayoutInflater.from(this), null)
         setContentView(viewMVC.rootView)
-
-        // init retrofit
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        stackoverflowApi = retrofit.create(StackoverflowApi::class.java)
+        fetchQuestionsUseCase = FetchQuestionsUseCase()
+        dialogsNavigator = DialogsNavigator(supportFragmentManager)
     }
 
     override fun onStart() {
@@ -62,16 +61,13 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMVC.Listener
         coroutineScope.launch {
             viewMVC.showProgressIndication()
             try {
-                val response = stackoverflowApi.lastActiveQuestions(20)
-                if (response.isSuccessful && response.body() != null) {
-                    viewMVC.bindQuestions(response.body()!!.questions)
-                    isDataLoaded = true
-                } else {
-                    onFetchFailed()
-                }
-            } catch (t: Throwable) {
-                if (t !is CancellationException) {
-                    onFetchFailed()
+                when (val result = fetchQuestionsUseCase.fetchLatestQuestions()) {
+                    is FetchQuestionsUseCase.Result.Success -> {
+                        viewMVC.bindQuestions(result.questions)
+                        isDataLoaded = true
+                    }
+
+                    is FetchQuestionsUseCase.Result.Failure -> onFetchFailed()
                 }
             } finally {
                 viewMVC.hideProgressIndication()
@@ -80,9 +76,7 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMVC.Listener
     }
 
     private fun onFetchFailed() {
-        supportFragmentManager.beginTransaction()
-            .add(ServerErrorDialogFragment.newInstance(), null)
-            .commitAllowingStateLoss()
+        dialogsNavigator.showServerErrorDialog()
     }
 
     override fun onRefreshClicked() {

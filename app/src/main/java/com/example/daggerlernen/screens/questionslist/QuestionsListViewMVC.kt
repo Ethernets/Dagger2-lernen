@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.daggerlernen.R
 import com.example.daggerlernen.questions.Question
+import com.example.daggerlernen.screens.common.viewsmvc.BaseViewMvc
 
 class QuestionsListViewMVC(
-    private val layoutInflater: LayoutInflater,
-    private val parent: ViewGroup?
-) {
+     layoutInflater: LayoutInflater,
+     parent: ViewGroup?
+): BaseViewMvc<QuestionsListViewMVC.Listener>(layoutInflater, parent, R.layout.layout_questions_list) {
     interface Listener {
         fun onRefreshClicked()
         fun onQuestionClicked(question: Question)
@@ -25,12 +25,8 @@ class QuestionsListViewMVC(
     private val recyclerView: RecyclerView
     private val questionsAdapter: QuestionsAdapter
 
-    val rootView: View
-    private val context: Context get() = rootView.context
-    private val listeners = HashSet<Listener>()
-
     init {
-        rootView = layoutInflater.inflate(R.layout.layout_questions_list, parent, false)
+//        rootView = layoutInflater.inflate(R.layout.layout_questions_list, parent, false)
         // init pull-down-to-refresh
         swipeRefresh = findViewById(R.id.swipeRefresh)
         swipeRefresh.setOnRefreshListener {
@@ -51,17 +47,6 @@ class QuestionsListViewMVC(
 
     }
 
-    fun <T: View?> findViewById(@IdRes id: Int): T {
-        return rootView.findViewById<T>(id)
-    }
-
-    fun registerListener(listener: Listener) {
-        listeners.add(listener)
-    }
-
-    fun unregisterListener(listener: Listener) {
-        listeners.remove(listener)
-    }
     fun showProgressIndication() {
         swipeRefresh.isRefreshing = true
     }
