@@ -3,8 +3,8 @@ package com.example.daggerlernen.screens.questiondetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import com.example.daggerlernen.questions.FetchQuestionDetailsUseCase
+import com.example.daggerlernen.screens.common.ScreensNavigator
 import com.example.daggerlernen.screens.common.activities.BaseActivity
 import com.example.daggerlernen.screens.common.dialogs.DialogsNavigator
 import kotlinx.coroutines.CoroutineScope
@@ -14,20 +14,22 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 
 class QuestionDetailsActivity : BaseActivity(), QuestionDetailsViewMvc.Listener {
-    private lateinit var viewMvc: QuestionDetailsViewMvc
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    private lateinit var viewMvc: QuestionDetailsViewMvc
     private lateinit var questionId: String
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
     private lateinit var dialogsNavigator: DialogsNavigator
+    private lateinit var screensNavigator: ScreensNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewMvc = QuestionDetailsViewMvc(LayoutInflater.from(this), null)
+        viewMvc = compositionRoot.viewMvcFactory.newQuestionsDetailsViewMvc()
         setContentView(viewMvc.rootView)
         fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
-        dialogsNavigator = DialogsNavigator(supportFragmentManager)
+        dialogsNavigator = compositionRoot.dialogsNavigator
+        screensNavigator = compositionRoot.screensNavigator
 
-        // retrieve question ID passed from outside
         questionId = intent.extras!!.getString(EXTRA_QUESTION_ID)!!
     }
 

@@ -1,49 +1,34 @@
 package com.example.daggerlernen.screens.questionslist
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.daggerlernen.Constants
-import com.example.daggerlernen.MyApplication
-import com.example.daggerlernen.R
-import com.example.daggerlernen.networking.StackoverflowApi
 import com.example.daggerlernen.questions.FetchQuestionsUseCase
 import com.example.daggerlernen.questions.Question
 import com.example.daggerlernen.screens.common.ScreensNavigator
 import com.example.daggerlernen.screens.common.activities.BaseActivity
 import com.example.daggerlernen.screens.common.dialogs.DialogsNavigator
-import com.example.daggerlernen.screens.common.dialogs.ServerErrorDialogFragment
-import com.example.daggerlernen.screens.questiondetails.QuestionDetailsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.coroutines.cancellation.CancellationException
 
 class QuestionsListActivity : BaseActivity(), QuestionsListViewMVC.Listener {
-
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
     private lateinit var viewMVC: QuestionsListViewMVC
     private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
     private lateinit var dialogsNavigator: DialogsNavigator
     private lateinit var screensNavigator: ScreensNavigator
 
-
     private var isDataLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewMVC = QuestionsListViewMVC(LayoutInflater.from(this), null)
+        viewMVC = compositionRoot.viewMvcFactory.newQuestionsListViewMvc()
         setContentView(viewMVC.rootView)
         fetchQuestionsUseCase = compositionRoot.fetchQuestionsUseCase
-        dialogsNavigator = DialogsNavigator(supportFragmentManager)
-        screensNavigator = ScreensNavigator(this)
+        dialogsNavigator = compositionRoot.dialogsNavigator
+        screensNavigator = compositionRoot.screensNavigator
     }
 
     override fun onStart() {
@@ -90,6 +75,4 @@ class QuestionsListActivity : BaseActivity(), QuestionsListViewMVC.Listener {
         screensNavigator.toQuestionDetails(questionId = question.id)
 
     }
-
-
 }
