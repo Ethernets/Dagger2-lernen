@@ -2,48 +2,29 @@ package com.example.daggerlernen.screens.questiondetails
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
-import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.daggerlernen.Constants
-import com.example.daggerlernen.R
-import com.example.daggerlernen.networking.StackoverflowApi
 import com.example.daggerlernen.questions.FetchQuestionDetailsUseCase
+import com.example.daggerlernen.screens.common.activities.BaseActivity
 import com.example.daggerlernen.screens.common.dialogs.DialogsNavigator
-import com.example.daggerlernen.screens.common.dialogs.ServerErrorDialogFragment
-import com.example.daggerlernen.screens.common.toolbar.MyToolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.coroutines.cancellation.CancellationException
 
-class QuestionDetailsActivity : AppCompatActivity(), QuestionDetailsViewMvc.Listener {
+class QuestionDetailsActivity : BaseActivity(), QuestionDetailsViewMvc.Listener {
     private lateinit var viewMvc: QuestionDetailsViewMvc
-
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
     private lateinit var questionId: String
-
     private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
-
     private lateinit var dialogsNavigator: DialogsNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewMvc = QuestionDetailsViewMvc(LayoutInflater.from(this), null)
         setContentView(viewMvc.rootView)
-        fetchQuestionDetailsUseCase = FetchQuestionDetailsUseCase()
+        fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
         dialogsNavigator = DialogsNavigator(supportFragmentManager)
 
         // retrieve question ID passed from outside

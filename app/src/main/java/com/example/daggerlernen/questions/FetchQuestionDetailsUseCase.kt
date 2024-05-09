@@ -8,20 +8,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.coroutines.cancellation.CancellationException
 
-class FetchQuestionDetailsUseCase {
+class FetchQuestionDetailsUseCase(private val stackoverflowApi: StackoverflowApi) {
     sealed class Result {
         class Success(val questions: QuestionWithBody) : Result()
         object Failure : Result()
     }
-
-    // init retrofit
-    val retrofit = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val stackoverflowApi: StackoverflowApi = retrofit.create(StackoverflowApi::class.java)
-
     suspend fun fetchQuestion(questionId: String): Result {
         return withContext(Dispatchers.IO) {
             try {

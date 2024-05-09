@@ -7,10 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.daggerlernen.Constants
+import com.example.daggerlernen.MyApplication
 import com.example.daggerlernen.R
 import com.example.daggerlernen.networking.StackoverflowApi
 import com.example.daggerlernen.questions.FetchQuestionsUseCase
 import com.example.daggerlernen.questions.Question
+import com.example.daggerlernen.screens.common.ScreensNavigator
+import com.example.daggerlernen.screens.common.activities.BaseActivity
 import com.example.daggerlernen.screens.common.dialogs.DialogsNavigator
 import com.example.daggerlernen.screens.common.dialogs.ServerErrorDialogFragment
 import com.example.daggerlernen.screens.questiondetails.QuestionDetailsActivity
@@ -23,15 +26,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.coroutines.cancellation.CancellationException
 
-class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMVC.Listener {
+class QuestionsListActivity : BaseActivity(), QuestionsListViewMVC.Listener {
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
     private lateinit var viewMVC: QuestionsListViewMVC
-
     private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
-
     private lateinit var dialogsNavigator: DialogsNavigator
+    private lateinit var screensNavigator: ScreensNavigator
+
 
     private var isDataLoaded = false
 
@@ -39,8 +41,9 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMVC.Listener
         super.onCreate(savedInstanceState)
         viewMVC = QuestionsListViewMVC(LayoutInflater.from(this), null)
         setContentView(viewMVC.rootView)
-        fetchQuestionsUseCase = FetchQuestionsUseCase()
+        fetchQuestionsUseCase = compositionRoot.fetchQuestionsUseCase
         dialogsNavigator = DialogsNavigator(supportFragmentManager)
+        screensNavigator = ScreensNavigator(this)
     }
 
     override fun onStart() {
@@ -84,7 +87,8 @@ class QuestionsListActivity : AppCompatActivity(), QuestionsListViewMVC.Listener
     }
 
     override fun onQuestionClicked(question: Question) {
-        QuestionDetailsActivity.start(this, question.id)
+        screensNavigator.toQuestionDetails(questionId = question.id)
+
     }
 
 
