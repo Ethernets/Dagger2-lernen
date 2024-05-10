@@ -6,6 +6,7 @@ import com.example.daggerlernen.questions.Question
 import com.example.daggerlernen.screens.common.ScreensNavigator
 import com.example.daggerlernen.screens.common.activities.BaseActivity
 import com.example.daggerlernen.screens.common.dialogs.DialogsNavigator
+import com.example.daggerlernen.screens.common.viewsmvc.ViewMvcFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -16,19 +17,18 @@ class QuestionsListActivity : BaseActivity(), QuestionsListViewMVC.Listener {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private lateinit var viewMVC: QuestionsListViewMVC
-    private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
-    private lateinit var dialogsNavigator: DialogsNavigator
-    private lateinit var screensNavigator: ScreensNavigator
+    lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
+    lateinit var dialogsNavigator: DialogsNavigator
+    lateinit var screensNavigator: ScreensNavigator
+    lateinit var viewMvcFactory: ViewMvcFactory
 
     private var isDataLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injector.inject(this)
         super.onCreate(savedInstanceState)
-        viewMVC = compositionRoot.viewMvcFactory.newQuestionsListViewMvc()
+        viewMVC = viewMvcFactory.newQuestionsListViewMvc()
         setContentView(viewMVC.rootView)
-        fetchQuestionsUseCase = compositionRoot.fetchQuestionsUseCase
-        dialogsNavigator = compositionRoot.dialogsNavigator
-        screensNavigator = compositionRoot.screensNavigator
     }
 
     override fun onStart() {

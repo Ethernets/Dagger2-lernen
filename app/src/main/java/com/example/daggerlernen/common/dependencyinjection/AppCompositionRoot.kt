@@ -1,18 +1,16 @@
-package com.example.daggerlernen.common.composition
+package com.example.daggerlernen.common.dependencyinjection
 
 import android.app.Activity
+import android.app.Application
 import androidx.annotation.UiThread
 import com.example.daggerlernen.Constants
 import com.example.daggerlernen.networking.StackoverflowApi
-import com.example.daggerlernen.questions.FetchQuestionDetailsUseCase
-import com.example.daggerlernen.questions.FetchQuestionsUseCase
 import com.example.daggerlernen.screens.common.ScreensNavigator
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @UiThread
-class AppCompositionRoot {
-    private var _retrofit: Retrofit? = null
+class AppCompositionRoot(val application: Application) {
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)

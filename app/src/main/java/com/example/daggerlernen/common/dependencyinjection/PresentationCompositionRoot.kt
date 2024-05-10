@@ -1,4 +1,4 @@
-package com.example.daggerlernen.common.composition
+package com.example.daggerlernen.common.dependencyinjection
 
 import com.example.daggerlernen.questions.FetchQuestionDetailsUseCase
 import com.example.daggerlernen.questions.FetchQuestionsUseCase
@@ -9,6 +9,7 @@ class PresentationCompositionRoot(private val activityCompositionRoot: ActivityC
     private val layoutInflater get() = activityCompositionRoot.layoutInflater
     private val fragmentManager get() = activityCompositionRoot.fragmentManager
     private val stackoverflowApi get() = activityCompositionRoot.stackoverflowApi
+    private val activity get() = activityCompositionRoot.activity
     val screensNavigator get() = activityCompositionRoot.screensNavigator
     val viewMvcFactory get() = ViewMvcFactory(layoutInflater)
     val dialogsNavigator get() = DialogsNavigator(fragmentManager)
