@@ -1,4 +1,6 @@
 package com.example.daggerlernen.common.dependencyinjection.activity
 
-interface ActivityScope {
-}
+import javax.inject.Scope
+
+@Scope
+annotation class ActivityScope
