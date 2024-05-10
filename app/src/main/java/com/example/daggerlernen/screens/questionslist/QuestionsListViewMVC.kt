@@ -26,8 +26,6 @@ class QuestionsListViewMVC(
     private val questionsAdapter: QuestionsAdapter
 
     init {
-//        rootView = layoutInflater.inflate(R.layout.layout_questions_list, parent, false)
-        // init pull-down-to-refresh
         swipeRefresh = findViewById(R.id.swipeRefresh)
         swipeRefresh.setOnRefreshListener {
             for (listener in listeners) {
@@ -35,7 +33,6 @@ class QuestionsListViewMVC(
             }
         }
 
-        // init recycler view
         recyclerView = findViewById(R.id.recycler)
         recyclerView.layoutManager = LinearLayoutManager(context)
         questionsAdapter = QuestionsAdapter{ clickedQuestion ->

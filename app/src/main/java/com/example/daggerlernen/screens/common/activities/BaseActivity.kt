@@ -3,7 +3,6 @@ package com.example.daggerlernen.screens.common.activities
 import androidx.appcompat.app.AppCompatActivity
 import com.example.daggerlernen.MyApplication
 import com.example.daggerlernen.common.dependencyinjection.activity.ActivityModule
-import com.example.daggerlernen.common.dependencyinjection.Injector
 import com.example.daggerlernen.common.dependencyinjection.activity.DaggerActivityComponent
 import com.example.daggerlernen.common.dependencyinjection.presentation.DaggerPresentationComponent
 import com.example.daggerlernen.common.dependencyinjection.presentation.PresentationModule
@@ -24,6 +23,6 @@ open class BaseActivity: AppCompatActivity() {
             .build()
     }
 
-    protected val injector get() = Injector(presentationComponent)
+    protected val injector get() = presentationComponent
 
 }

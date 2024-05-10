@@ -3,7 +3,6 @@ package com.example.daggerlernen.screens.questiondetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.example.daggerlernen.common.dependencyinjection.Service
 import com.example.daggerlernen.questions.FetchQuestionDetailsUseCase
 import com.example.daggerlernen.screens.common.ScreensNavigator
 import com.example.daggerlernen.screens.common.activities.BaseActivity
@@ -14,16 +13,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class QuestionDetailsActivity : BaseActivity(), QuestionDetailsViewMvc.Listener {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private lateinit var viewMvc: QuestionDetailsViewMvc
     private lateinit var questionId: String
-    @field:Service private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
-    @field:Service private lateinit var dialogsNavigator: DialogsNavigator
-    @field:Service private lateinit var screensNavigator: ScreensNavigator
-    @field:Service private lateinit var viewMvcFactory: ViewMvcFactory
+    @Inject lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
+    @Inject lateinit var dialogsNavigator: DialogsNavigator
+    @Inject lateinit var screensNavigator: ScreensNavigator
+    @Inject lateinit var viewMvcFactory: ViewMvcFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injector.inject(this)

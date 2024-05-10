@@ -5,7 +5,7 @@ import com.example.daggerlernen.networking.StackoverflowApi
 import dagger.Component
 import javax.inject.Singleton
 
-@Singleton
+@AppScope
 @Component(modules = [AppModule::class])
 interface AppComponent {
     fun application(): Application
