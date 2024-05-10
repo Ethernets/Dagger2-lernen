@@ -3,6 +3,7 @@ package com.example.daggerlernen.screens.questiondetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.example.daggerlernen.common.dependencyinjection.Service
 import com.example.daggerlernen.questions.FetchQuestionDetailsUseCase
 import com.example.daggerlernen.screens.common.ScreensNavigator
 import com.example.daggerlernen.screens.common.activities.BaseActivity
@@ -19,10 +20,10 @@ class QuestionDetailsActivity : BaseActivity(), QuestionDetailsViewMvc.Listener 
 
     private lateinit var viewMvc: QuestionDetailsViewMvc
     private lateinit var questionId: String
-    lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
-    lateinit var dialogsNavigator: DialogsNavigator
-    lateinit var screensNavigator: ScreensNavigator
-    lateinit var viewMvcFactory: ViewMvcFactory
+    @field:Service private lateinit var fetchQuestionDetailsUseCase: FetchQuestionDetailsUseCase
+    @field:Service private lateinit var dialogsNavigator: DialogsNavigator
+    @field:Service private lateinit var screensNavigator: ScreensNavigator
+    @field:Service private lateinit var viewMvcFactory: ViewMvcFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injector.inject(this)

@@ -1,20 +1,60 @@
 package com.example.daggerlernen.common.dependencyinjection
 
-import com.example.daggerlernen.screens.questiondetails.QuestionDetailsActivity
-import com.example.daggerlernen.screens.questionslist.QuestionsListActivity
+import com.example.daggerlernen.common.dependencyinjection.presentation.PresentationComponent
+import com.example.daggerlernen.questions.FetchQuestionDetailsUseCase
+import com.example.daggerlernen.questions.FetchQuestionsUseCase
+import com.example.daggerlernen.screens.common.ScreensNavigator
+import com.example.daggerlernen.screens.common.dialogs.DialogsNavigator
+import com.example.daggerlernen.screens.common.viewsmvc.ViewMvcFactory
+import java.lang.reflect.Field
 
-class Injector(private val compositionRoot: PresentationCompositionRoot) {
-    fun inject(questionsListActivity: QuestionsListActivity) {
-        questionsListActivity.fetchQuestionsUseCase = compositionRoot.fetchQuestionsUseCase
-        questionsListActivity.dialogsNavigator = compositionRoot.dialogsNavigator
-        questionsListActivity.screensNavigator = compositionRoot.screensNavigator
-        questionsListActivity.viewMvcFactory = compositionRoot.viewMvcFactory
+class Injector(private val component: PresentationComponent) {
+    fun inject(client: Any) {
+        for (field in getAllFields(client)) {
+            if (isAnnotatedForInjection(field)) {
+                injectField(client, field)
+            }
+        }
     }
-    fun inject(detailsActivity: QuestionDetailsActivity) {
-        detailsActivity.fetchQuestionDetailsUseCase = compositionRoot.fetchQuestionDetailsUseCase
-        detailsActivity.dialogsNavigator = compositionRoot.dialogsNavigator
-        detailsActivity.screensNavigator = compositionRoot.screensNavigator
-        detailsActivity.viewMvcFactory = compositionRoot.viewMvcFactory
-
+    private fun getAllFields(client: Any): Array<out Field> {
+        val clientClass = client::class.java
+        return clientClass.declaredFields
+    }
+    private fun isAnnotatedForInjection(field: Field): Boolean {
+        val fieldAnnotations = field.annotations
+        for (annotation in fieldAnnotations) {
+            if (annotation is Service) {
+                return true
+            }
+        }
+        return false
+    }
+    private fun injectField(client: Any, field: Field) {
+        val isAccessibleInitially = field.isAccessible
+        field.isAccessible = true
+        field.set(client, getServiceForClass(field.type))
+        field.isAccessible = isAccessibleInitially
+    }
+    private fun getServiceForClass(type: Class<*>): Any {
+        when (type) {
+            DialogsNavigator::class.java -> {
+                return component.dialogsNavigator()
+            }
+            ScreensNavigator::class.java -> {
+                return component.screensNavigator()
+            }
+            FetchQuestionsUseCase::class.java -> {
+                return component.fetchQuestionsUseCase()
+            }
+            FetchQuestionDetailsUseCase::class.java -> {
+                return component.fetchQuestionDetailsUseCase()
+            }
+            ViewMvcFactory::class.java -> {
+                return component.viewMvcFactory()
+            }
+            else -> {
+                throw Exception("unsupported service type: $type")
+            }
+        }
     }
 }

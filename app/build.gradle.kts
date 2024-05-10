@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -50,4 +51,6 @@ dependencies {
     implementation(libs.couroutine.core)
     implementation(libs.couroutine.android)
     implementation(libs.swipeRefresh.layout)
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 }

@@ -1,6 +1,7 @@
 package com.example.daggerlernen.screens.questionslist
 
 import android.os.Bundle
+import com.example.daggerlernen.common.dependencyinjection.Service
 import com.example.daggerlernen.questions.FetchQuestionsUseCase
 import com.example.daggerlernen.questions.Question
 import com.example.daggerlernen.screens.common.ScreensNavigator
@@ -17,10 +18,10 @@ class QuestionsListActivity : BaseActivity(), QuestionsListViewMVC.Listener {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private lateinit var viewMVC: QuestionsListViewMVC
-    lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
-    lateinit var dialogsNavigator: DialogsNavigator
-    lateinit var screensNavigator: ScreensNavigator
-    lateinit var viewMvcFactory: ViewMvcFactory
+    @field:Service private lateinit var fetchQuestionsUseCase: FetchQuestionsUseCase
+    @field:Service private lateinit var dialogsNavigator: DialogsNavigator
+    @field:Service private lateinit var screensNavigator: ScreensNavigator
+    @field:Service private lateinit var viewMvcFactory: ViewMvcFactory
 
     private var isDataLoaded = false
 
