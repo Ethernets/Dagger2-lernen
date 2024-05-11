@@ -1,22 +1,11 @@
 package com.example.daggerlernen.common.dependencyinjection.activity
 
-import android.view.LayoutInflater
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import com.example.daggerlernen.networking.StackoverflowApi
-import com.example.daggerlernen.screens.common.ScreensNavigator
+import com.example.daggerlernen.common.dependencyinjection.app.AppComponent
+import com.example.daggerlernen.common.dependencyinjection.presentation.PresentationComponent
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [ActivityModule::class])
+@Component(dependencies = [AppComponent::class], modules = [ActivityModule::class])
 interface ActivityComponent {
-    fun activity(): AppCompatActivity
-
-    fun layoutInflater(): LayoutInflater
-
-    fun fragmentManager(): FragmentManager
-
-    fun stackoverflowApi(): StackoverflowApi
-
-    fun screensNavigator(): ScreensNavigator
+   fun newPresentationComponent(): PresentationComponent
 }

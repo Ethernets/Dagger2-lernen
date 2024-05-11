@@ -1,6 +1,7 @@
 package com.example.daggerlernen.screens.questionslist
 
 import android.os.Bundle
+import android.util.Log
 import com.example.daggerlernen.questions.FetchQuestionsUseCase
 import com.example.daggerlernen.questions.Question
 import com.example.daggerlernen.screens.common.ScreensNavigator
@@ -27,6 +28,7 @@ class QuestionsListActivity : BaseActivity(), QuestionsListViewMVC.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injector.inject(this)
+        Log.e("QuestionsListActivity", "$screensNavigator")
         super.onCreate(savedInstanceState)
         viewMVC = viewMvcFactory.newQuestionsListViewMvc()
         setContentView(viewMVC.rootView)

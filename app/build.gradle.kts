@@ -53,4 +53,5 @@ dependencies {
     implementation(libs.swipeRefresh.layout)
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
+    implementation(libs.glide)
 }

@@ -4,23 +4,20 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.daggerlernen.MyApplication
 import com.example.daggerlernen.common.dependencyinjection.activity.ActivityModule
 import com.example.daggerlernen.common.dependencyinjection.activity.DaggerActivityComponent
-import com.example.daggerlernen.common.dependencyinjection.presentation.DaggerPresentationComponent
-import com.example.daggerlernen.common.dependencyinjection.presentation.PresentationModule
 
 open class BaseActivity: AppCompatActivity() {
-    private val appCompositionRoot get() = (application as MyApplication).appComponent
+    private val appComponent get() = (application as MyApplication).appComponent
 
     val activityComponent by lazy {
         DaggerActivityComponent.builder()
-            .activityModule(ActivityModule(this, appCompositionRoot))
+            .appComponent(appComponent)
+            .activityModule(ActivityModule(this))
             .build()
     }
 
 
     private val presentationComponent by lazy {
-        DaggerPresentationComponent.builder()
-            .presentationModule(PresentationModule(activityComponent))
-            .build()
+        activityComponent.newPresentationComponent()
     }
 
     protected val injector get() = presentationComponent

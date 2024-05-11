@@ -14,6 +14,7 @@ coroutine = "1.8.0"
 swipeRefresh = "1.1.0"
 daggerVersion = "2.51.1"
 kspVersion = "1.9.24-1.0.20"
+glideVersion = "5.0.0-rc01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +34,8 @@ swipeRefresh-layout = { group = "androidx.swiperefreshlayout", name = "swiperefr
 
 dagger = { group = "com.google.dagger", name = "dagger", version.ref = "daggerVersion" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "daggerVersion" }
+
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glideVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
